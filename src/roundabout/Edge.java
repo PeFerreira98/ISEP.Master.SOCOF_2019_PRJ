@@ -26,4 +26,12 @@ public class Edge {
     public Edge getPrevious() {
         return this.start.getPrevious();
     }
+
+    public void setBusy(boolean b){
+        this.isBusy = b;
+    }
+
+    public boolean isBusy(){
+        return this.isBusy;
+    }
 }

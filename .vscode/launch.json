@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "roundabout.Main",
+            "projectName": "socof_f2ad048e"
+        }
+    ]
+}
