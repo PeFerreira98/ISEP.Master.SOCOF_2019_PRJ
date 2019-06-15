@@ -9,28 +9,15 @@ public class Roundabout {
     // private ConcurrentLinkedQueue<Node> nodes;
     private List<Node> nodes;
 
-    /*
-    private HashMap<Car, Tuple<Integer, Edge>> carsPosition;
-
-    public class Tuple<K, V> {
-        public final K key;
-        public final V value;
-        public Tuple(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-     */
-
     public Roundabout (int accesses){
         this.nodes = new ArrayList<>();
         // this.nodes = new ConcurrentLinkedQueue<Node>();
 
-        Node last = new Node(0, NodeType.Out);
+        Node last = new Node(0, NodeType.In);
         this.nodes.add(last);
         Edge edge = null;
 
-        for(int i = 1; i <= 2 * accesses; i++) {
+        for(int i = 1; i < 2 * accesses; i++) {
             Node newNode = new Node(i, i % 2 == 0 ? NodeType.In: NodeType.Out);
             this.nodes.add(newNode);
             edge = new Edge(last, newNode);
@@ -39,6 +26,7 @@ public class Roundabout {
             last = newNode;
         }
         nodes.get(0).setPrevious(edge);
+        last.setNext(nodes.get(0).getPrevious());
     }
 
     public boolean hasNode(Node node) {
@@ -57,5 +45,15 @@ public class Roundabout {
         }
 
         return null;
+    }
+
+    public void PrintRoundabout(){
+        System.out.println("ROUNDABOUT");
+        for(Node n : this.nodes){
+            System.out.println("\tNODE -> " + n.toString() + " -> ");
+
+            if (n.getNext() != null)
+                System.out.println("\t\tEDGE -> " + n.getNext().hashCode() + " -> ");
+        }
     }
 }

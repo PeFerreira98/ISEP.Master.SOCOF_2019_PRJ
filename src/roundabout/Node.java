@@ -35,7 +35,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "Node " + id + " " + type ;
+        return "Node " + id + " " + type;
     }
 
     public void setPrevious(Edge previous) {
