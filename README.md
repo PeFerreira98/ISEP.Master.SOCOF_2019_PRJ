@@ -18,6 +18,7 @@ Each car is a thread, so you can create as much cars as your pc can handle.
 
 Each thread is independent and has a shared data structure that is the roundabout and it's list of nodes.
 
-Because multiple Threads can access the same object at the same time, we assured that each shared object is atomic so that it doesn't exist data discrepancy.
+Because multiple Threads can access the same object at the same time, we assured that each shared object is atomic so that it doesn't exist data discrepancy (using AtomicBoolean and AtomicReference properties).
 
-By assuring object atomicity we implemented a locked free aproach.
+By assuring object atomicity we implemented a locked free aproach thus assuring and maintaining linearizability.
+
