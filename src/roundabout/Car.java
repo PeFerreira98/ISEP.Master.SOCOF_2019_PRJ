@@ -25,6 +25,7 @@ public class Car extends Thread {
         if (roundabout.hasNode(start) && roundabout.hasNode(end)) {
             if (start.isIn() && end.isOut()) {
                 Node actual = this.start;
+                actual.addCar(this);
 
                 while (true) {
                     // if (actual.getId() == start.getId()) {
@@ -37,9 +38,20 @@ public class Car extends Thread {
                     while (this.roundabout.getNode(actual).getNext().isBusy()) {
                     }
 
+                    //Check if vehicle is wating to enter on roundabout and if is his turn
+                    if(actual.getId() == start.getId()){
+                        if(actual.checkCar(this)){
+                            actual.removeCar();
+                        }else{
+                            System.out.println("Car " + this.id + " is on hold on entrance " + start.getId());
+                            continue;
+                        }
+                    }
+
                     this.roundabout.getNode(actual).getNext().setBusy(true);
                     // this.roundabout.getNode(actual).setHasCar(false);
 
+                    //Random time to simulate the speed travel
                     try {
                         sleep(new Random().nextInt(3500 - 1000) + 1000);
                     } catch (InterruptedException e) {

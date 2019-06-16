@@ -1,5 +1,8 @@
 package roundabout;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class Node {
 
     private int id;
@@ -10,9 +13,12 @@ public class Node {
 
     // private boolean hasCar;
 
+    private Queue<Car> carsOnHold;
+
     public Node(int id, NodeType type) {
         this.id = id;
         this.type = type;
+        this.carsOnHold = new LinkedList<Car>();
     }
 
     public int getId() {
@@ -55,4 +61,16 @@ public class Node {
     // public boolean hasCar(){
     //     return this.hasCar;
     // }
+
+    public void addCar(Car c){
+        this.carsOnHold.add(c);
+    }
+
+    public boolean checkCar(Car c){
+        return this.carsOnHold.peek().getId() == c.getId();
+    }
+
+    public Car removeCar(){
+        return this.carsOnHold.poll();
+    }
 }
