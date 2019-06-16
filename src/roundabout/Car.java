@@ -75,7 +75,6 @@ public class Car extends Thread {
                         System.out.println("Car " + this.id + " has moved to " + actualNode.getId());
 
                         if (actualNode == end) {
-                            actualNode.getPrevious().release();
                             System.out.println("Car " + this.id + " has arrived to his destiny.");
                             break;
                         }
