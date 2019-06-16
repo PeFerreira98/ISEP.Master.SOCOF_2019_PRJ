@@ -1,17 +1,18 @@
 package roundabout;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Roundabout {
-    // private ConcurrentLinkedQueue<Node> nodes;
-    private List<Node> nodes;
+
+    private final List<Node> nodes;
 
     public Roundabout (int accesses){
+        if(accesses < 1)
+            throw new InvalidParameterException("cannot create roundabout with less than 1 entries");
+
         this.nodes = new ArrayList<>();
-        // this.nodes = new ConcurrentLinkedQueue<Node>();
 
         Node last = new Node(0, NodeType.In);
         this.nodes.add(last);
@@ -41,9 +42,9 @@ public class Roundabout {
         return this.nodes.get(index);
     }
 
-    public Node getNode(Node node){
+    public Node getNode(Node node) {
         for (Node n : this.nodes) {
-            if(n.getId() == node.getId()){
+            if(n.getId() == node.getId()) {
                 return n;
             }
         }
@@ -57,7 +58,7 @@ public class Roundabout {
             System.out.println("\tNODE -> " + n.toString() + " -> ");
 
             if (n.getNext() != null)
-                System.out.println("\t\tEDGE -> " + n.getNext().hashCode() + " -> ");
+                System.out.println("\t\tEDGE -> " + n.getNext().toString() + " -> ");
         }
     }
 }

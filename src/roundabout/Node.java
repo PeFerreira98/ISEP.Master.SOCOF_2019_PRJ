@@ -1,24 +1,21 @@
 package roundabout;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Node {
 
-    private int id;
-    private NodeType type;
+    private final int id;
+    private final NodeType type;
 
     private Edge previous;
     private Edge next;
 
-    // private boolean hasCar;
-
-    private Queue<Car> carsOnHold;
+    private final ConcurrentLinkedQueue<Car> carsOnHold;
 
     public Node(int id, NodeType type) {
         this.id = id;
         this.type = type;
-        this.carsOnHold = new LinkedList<Car>();
+        this.carsOnHold = new ConcurrentLinkedQueue<>();
     }
 
     public int getId() {
@@ -33,6 +30,16 @@ public class Node {
         return this.previous;
     }
 
+    public void setPrevious(Edge previous) {
+        if(this.previous == null)
+            this.previous = previous;
+    }
+
+    public void setNext(Edge next) {
+        if(this.next == null)
+            this.next = next;
+    }
+
     public boolean isIn() {
         return NodeType.In.equals(type);
     }
@@ -41,36 +48,18 @@ public class Node {
         return NodeType.Out.equals(type);
     }
 
-    @Override
-    public String toString() {
-        return "Node " + id + " " + type;
-    }
-
-    public void setPrevious(Edge previous) {
-        this.previous = previous;
-    }
-
-    public void setNext(Edge next) {
-        this.next = next;
-    }
-
-    // public void setHasCar(boolean b){
-    //     this.hasCar = b;
-    // }
-
-    // public boolean hasCar(){
-    //     return this.hasCar;
-    // }
-
     public void addCar(Car c){
         this.carsOnHold.add(c);
     }
 
     public boolean checkCar(Car c){
-        return this.carsOnHold.peek().getId() == c.getId();
+        return this.carsOnHold.peek() == c;
     }
 
-    public Car removeCar(){
-        return this.carsOnHold.poll();
+    public Car removeCar() { return this.carsOnHold.poll(); }
+
+    @Override
+    public String toString() {
+        return "Node " + id + " " + type;
     }
 }

@@ -3,79 +3,82 @@ package roundabout;
 import java.util.Random;
 
 public class Car extends Thread {
-    private int id;
+    private final int id;
 
-    private Node start;
-    private Node end;
-    private Edge current;
-
-    private Roundabout roundabout;
+    private final Node start;
+    private final Node end;
+    private final Roundabout roundabout;
 
     public Car(int id, Roundabout roundabout, Node start, Node end) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.roundabout = roundabout;
-        // this.current = null;
     }
 
     @Override
     public void run() {
         // super.start();
-        if (roundabout.hasNode(start) && roundabout.hasNode(end)) {
-            if (start.isIn() && end.isOut()) {
-                Node actual = this.start;
-                actual.addCar(this);
+        if(start != null && end != null && roundabout != null) {
+            if (roundabout.hasNode(start) && roundabout.hasNode(end)) {
+                if (start.isIn() && end.isOut()) {
 
-                while (true) {
-                    // if (actual.getId() == start.getId()) {
-                    //     while (this.roundabout.getNode(actual).getPrevious().isBusy()
-                    //             || this.roundabout.getNode(actual).hasCar()
-                    //             || this.roundabout.getNode(actual).getPrevious().getStart().getPrevious().isBusy()) {
-                    //         System.out.println("Car " + this.id + " is wating on " + actual.getId());
-                    //     }
-                    // }
-                    while (this.roundabout.getNode(actual).getNext().isBusy()) {
-                    }
+                    Node actualNode = this.start;
+                    Edge currentEdge = this.start.getNext();
+                    actualNode.addCar(this);
 
-                    //Check if vehicle is wating to enter on roundabout and if is his turn
-                    if(actual.getId() == start.getId()){
-                        if(actual.checkCar(this)){
-                            actual.removeCar();
-                        }else{
-                            System.out.println("Car " + this.id + " is on hold on entrance " + start.getId());
-                            continue;
+                    while (true) {
+
+                        //Check if vehicle is wating to enter on roundabout and if is his turn
+                        if (actualNode == start) {
+                            if (actualNode.checkCar(this)) {
+                                actualNode.removeCar();
+                            } else {
+                                System.out.println("Car " + this.id + " is on hold on entrance " + start.getId());
+                                //this.wait();
+                                continue;
+                            }
+                        }
+
+                        // loop until right and left is empty
+                        while (true) {
+                            if (currentEdge.acquire()) {
+                                if (actualNode.getPrevious().acquire()) {
+                                    actualNode.getPrevious().release();
+                                    break;
+                                } else {
+                                    currentEdge.release();
+                                }
+                            }
+                            //this.wait();
+                        }
+
+                        //Random time to simulate the travel time
+                        try {
+                            sleep(new Random().nextInt(3500 - 1000) + 1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        currentEdge.release();
+
+                        actualNode = actualNode.getNext().getEnd();
+                        currentEdge = currentEdge.getEnd().getNext();
+
+                        System.out.println("Car " + this.id + " has moved to " + actualNode.getId());
+
+                        if (actualNode == end) {
+                            actualNode.getPrevious().release();
+                            System.out.println("Car " + this.id + " has arrived to his destiny.");
+                            break;
                         }
                     }
-
-                    this.roundabout.getNode(actual).getNext().setBusy(true);
-                    // this.roundabout.getNode(actual).setHasCar(false);
-
-                    //Random time to simulate the speed travel
-                    try {
-                        sleep(new Random().nextInt(3500 - 1000) + 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    this.roundabout.getNode(actual).getPrevious().setBusy(false);
-                    actual = this.roundabout.getNode(actual).getNext().getEnd();
-                    // this.roundabout.getNode(actual).setHasCar(true);
-
-                    System.out.println("Car " + this.id + " has moved to " + actual.getId());
-
-                    if(actual.getId() == end.getId()){
-                        this.roundabout.getNode(actual).getPrevious().setBusy(false);
-                        // this.roundabout.getNode(actual).setHasCar(false);
-                        System.out.println("Car " + this.id + " has arrived to his destiny.");
-                        break;
-                    }
+                } else {
+                    System.out.println("Can't get in at " + start + " or out at " + end);
                 }
             } else {
-                System.out.println("Can't get in at " + start + " or out at " + end);
+                System.out.println("Round about does not contain " + start + " or " + end);
             }
-        } else {
-            System.out.println("Round about does not contain " + start + " or " + end);
         }
     }
 }

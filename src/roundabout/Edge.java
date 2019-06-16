@@ -1,14 +1,19 @@
 package roundabout;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 public class Edge {
-    private Node start;
-    private Node end;
-    private boolean isBusy;
+    private final Node start;
+    private final Node end;
+    private final AtomicBoolean isBusy;
+    private final AtomicReference<Car> currentCar;
 
     public Edge(Node start, Node end) {
         this.start = start;
         this.end = end;
-        this.isBusy = false;
+        this.isBusy = new AtomicBoolean(false);
+        this.currentCar = new AtomicReference<>();
     }
 
     public Node getStart() {
@@ -27,11 +32,25 @@ public class Edge {
         return this.start.getPrevious();
     }
 
-    public void setBusy(boolean b){
-        this.isBusy = b;
+    public boolean acquire() {
+        return this.isBusy.compareAndSet(false, true);
     }
 
-    public boolean isBusy(){
-        return this.isBusy;
+    public boolean acquire(Car c) {
+        return this.currentCar.compareAndSet(null, c);
+    }
+
+    public boolean release() {
+        //this.isBusy.set(false);
+        return this.isBusy.compareAndSet(true, false);
+    }
+
+    public boolean release(Car c) {
+        return this.currentCar.compareAndSet(c, null);
+    }
+
+    @Override
+    public String toString() {
+        return "Edge -> start: " + start.toString() + " end: " + end.toString();
     }
 }
