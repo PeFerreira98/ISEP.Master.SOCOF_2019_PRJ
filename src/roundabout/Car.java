@@ -38,19 +38,19 @@ public class Car extends Thread {
                                 //this.wait();
                                 continue;
                             }
-                        }
 
-                        // loop until right and left is empty
-                        while (true) {
-                            if (currentEdge.acquire()) {
-                                if (actualNode.getPrevious().acquire()) {
-                                    actualNode.getPrevious().release();
-                                    break;
-                                } else {
-                                    currentEdge.release();
+                            // loop until right and left is empty
+                            while (true) {
+                                if (currentEdge.acquire()) {
+                                    if (actualNode.getPrevious().acquire()) {
+                                        actualNode.getPrevious().release();
+                                        break;
+                                    } else {
+                                        currentEdge.release();
+                                    }
                                 }
+                                //this.wait();
                             }
-                            //this.wait();
                         }
 
                         //Random time to simulate the travel time
@@ -60,9 +60,16 @@ public class Car extends Thread {
                             e.printStackTrace();
                         }
 
+                        actualNode = actualNode.getNext().getEnd();
+
+                        // get next lane if not end
+                        if (actualNode != end) {
+                            while(!currentEdge.getEnd().getNext().acquire());
+                        }
+
+                        // release current lane
                         currentEdge.release();
 
-                        actualNode = actualNode.getNext().getEnd();
                         currentEdge = currentEdge.getEnd().getNext();
 
                         System.out.println("Car " + this.id + " has moved to " + actualNode.getId());
