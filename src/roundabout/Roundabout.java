@@ -25,8 +25,12 @@ public class Roundabout {
             last.setNext(edge);
             last = newNode;
         }
+
+        //Creating the final edge to "close" the roundabout
+        edge = new Edge(last,nodes.get(0));
+
+        last.setNext(edge);
         nodes.get(0).setPrevious(edge);
-        last.setNext(nodes.get(0).getPrevious());
     }
 
     public boolean hasNode(Node node) {

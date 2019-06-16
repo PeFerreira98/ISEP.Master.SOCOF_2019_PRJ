@@ -8,6 +8,8 @@ public class Node {
     private Edge previous;
     private Edge next;
 
+    // private boolean hasCar;
+
     public Node(int id, NodeType type) {
         this.id = id;
         this.type = type;
@@ -45,4 +47,12 @@ public class Node {
     public void setNext(Edge next) {
         this.next = next;
     }
+
+    // public void setHasCar(boolean b){
+    //     this.hasCar = b;
+    // }
+
+    // public boolean hasCar(){
+    //     return this.hasCar;
+    // }
 }
